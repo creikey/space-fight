@@ -1,3 +1,12 @@
+# Exported games
+exports/
+
+# TURN credentials
+src/turn_username.txt
+src/turn_password.txt
+
+# Downloaded libraries
+src/webrtc_debug
 
 # Godot-specific ignores
 .import/
