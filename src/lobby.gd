@@ -16,6 +16,7 @@ func _ready():
 			$connect/lobby.text = data
 
 func _update_lobby(text):
+	printt("Window parent location: ", JavaScript.eval("window.location"))
 	if OS.get_name() == 'HTML5':
 		JavaScript.eval("var x = new URLSearchParams(window.location.hash.replace('#', '', 1)); x.set('lobby', '" + text + "'); window.location.hash = x.toString()")
 	$players/lobby.text = text
@@ -90,9 +91,10 @@ func _on_start_pressed():
 	gamestate.begin_game()
 
 func _on_server_toggled(button_pressed):
-	if button_pressed:
-		Server.listen(9080)
-		$connect/server.text = "Stop"
-	else:
-		Server.stop()
-		$connect/server.text = "Listen"
+	pass
+#	if button_pressed:
+#		Server.listen(9080)
+#		$connect/server.text = "Stop"
+#	else:
+#		Server.stop()
+#		$connect/server.text = "Listen"

@@ -15,14 +15,13 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Multiplayer Bomber"
+config/name="Space Fight"
 run/main_scene="res://lobby.tscn"
 
 [autoload]
 
 Client="*res://signaling/client/multiplayer_client.gd"
 gamestate="*res://gamestate.gd"
-Server="*res://signaling/server/ws_webrtc_server.gd"
 
 [debug]
 
@@ -30,7 +29,7 @@ gdscript/warnings/return_value_discarded=false
 
 [gdnative]
 
-singletons=[  ]
+singletons=[ "res://webrtc_debug/webrtc_debug.tres" ]
 
 [image_loader]
 
