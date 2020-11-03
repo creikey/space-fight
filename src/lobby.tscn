@@ -21,6 +21,9 @@ margin_right = 1036.0
 margin_bottom = 701.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="lobby_label" type="Label" parent="Players"]
 margin_left = 26.0
@@ -70,6 +73,7 @@ __meta__ = {
 }
 
 [node name="Connect" type="Panel" parent="."]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 2

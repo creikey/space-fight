@@ -81,11 +81,11 @@ func _on_game_ended():
 	if OS.get_name() == 'HTML5':
 		JavaScript.eval("var x = new URLSearchParams(window.location.hash.replace('#', '', 1)); x.delete('lobby'); window.location.hash = x.toString()")
 	$Players/lobby.text = ''
-	$connect/lobby.text = ''
+	_lobby_code_input.text = ''
 
 func _on_game_error(errtxt):
-	get_node("error").dialog_text = errtxt
-	get_node("error").popup_centered_minsize()
+	get_node("ErrorDialog").dialog_text = errtxt
+	get_node("ErrorDialog").popup_centered_minsize()
 
 func refresh_lobby():
 	var players = gamestate.get_player_list()
