@@ -1,8 +1,5 @@
 extends Node
 
-# Default game port
-const DEFAULT_PORT = 10567
-
 # Max number of players
 const MAX_PEERS = 12
 
@@ -77,7 +74,7 @@ remote func pre_start_game(spawn_points):
 	var world = load("res://world.tscn").instance()
 	get_tree().get_root().add_child(world)
 
-	get_tree().get_root().get_node("lobby").hide()
+	get_tree().get_root().get_node("Lobby").hide()
 
 	var player_scene = load("res://player.tscn")
 

@@ -1,5 +1,17 @@
 extends Control
 
+const TARGET_IP: String = "wss://signalserve.ddns.net"
+
+onready var _connect_panel: Panel = $Connect
+onready var _menu_vbox: VBoxContainer = _connect_panel.get_node("CenterContainer/V")
+onready var _name_label: Label = _menu_vbox.get_node("NameLabel")
+onready var _name_input: LineEdit = _menu_vbox.get_node("NameInput")
+onready var _host_button: Button = _menu_vbox.get_node("Host")
+onready var _joining_hbox: HBoxContainer = _menu_vbox.get_node("H")
+onready var _lobby_code_input: LineEdit = _joining_hbox.get_node("LobbyCode")
+onready var _lobby_join_button: Button = _joining_hbox.get_node("Join")
+onready var _error_label: Label = _menu_vbox.get_node("ErrorLabel")
+
 func _ready():
 	if OS.get_name() == 'HTML5':
 		$connect/server.hide()
@@ -19,58 +31,56 @@ func _update_lobby(text):
 	printt("Window parent location: ", JavaScript.eval("window.location"))
 	if OS.get_name() == 'HTML5':
 		JavaScript.eval("var x = new URLSearchParams(window.location.hash.replace('#', '', 1)); x.set('lobby', '" + text + "'); window.location.hash = x.toString()")
-	$players/lobby.text = text
+	$Players/lobby.text = text
 
 func _on_host_pressed():
-	if get_node("connect/name").text == "":
-		get_node("connect/error_label").text = "Invalid name!"
+	if _name_input.text == "":
+		_error_label.text = "Invalid name!"
 		return
 
-	get_node("connect").hide()
-	get_node("players").show()
-	get_node("connect/error_label").text = ""
+	get_node("Connect").hide()
+	
+	get_node("Players").show()
+	_error_label.text = ""
 
-	var player_name = get_node("connect/name").text
-	var ip = get_node("connect/ip").text
-	gamestate.host_game(player_name, ip)
+	var player_name = _name_input.text
+	gamestate.host_game(player_name, TARGET_IP)
 	# refresh_lobby() gets called by the player_list_changed signal, emitted when host is ready
 
 func _on_join_pressed():
-	if get_node("connect/name").text == "":
-		get_node("connect/error_label").text = "Invalid name!"
-		return
+	if _name_input.text == "":
+		_error_label.text = "Invalid name!"
 
-	var ip = get_node("connect/ip").text
-	var lobby = get_node("connect/lobby").text
+	var lobby = _lobby_code_input.text
 	if lobby == '':
-		get_node("connect/error_label").text = "Must specify a lobby when joining!"
+		_error_label.text = "Must specify a lobby when joining!"
 		return
-	get_node("connect/error_label").text=""
-	get_node("connect/host").disabled = true
-	get_node("connect/join").disabled = true
+	_error_label.text=""
+	_host_button.disabled = true
+	_lobby_join_button.disabled = true
 
-	var player_name = get_node("connect/name").text
-	gamestate.join_game(ip, player_name, lobby)
+	var player_name = _name_input.text
+	gamestate.join_game(TARGET_IP, player_name, lobby)
 	# refresh_lobby() gets called by the player_list_changed signal
 
 func _on_connection_success():
-	get_node("connect").hide()
-	get_node("players").show()
+	get_node("Connect").hide()
+	get_node("Players").show()
 
 func _on_connection_failed():
-	get_node("connect/host").disabled = false
-	get_node("connect/join").disabled = false
-	get_node("connect/error_label").set_text("Connection failed.")
+	_host_button.disabled = false
+	_lobby_join_button.disabled = false
+	_error_label.set_text("Connection failed.")
 
 func _on_game_ended():
 	show()
-	get_node("connect").show()
-	get_node("players").hide()
-	get_node("connect/host").disabled = false
-	get_node("connect/join").disabled = false
+	get_node("Connect").show()
+	get_node("Players").hide()
+	_host_button.disabled = false
+	_lobby_join_button.disabled = false
 	if OS.get_name() == 'HTML5':
 		JavaScript.eval("var x = new URLSearchParams(window.location.hash.replace('#', '', 1)); x.delete('lobby'); window.location.hash = x.toString()")
-	$players/lobby.text = ''
+	$Players/lobby.text = ''
 	$connect/lobby.text = ''
 
 func _on_game_error(errtxt):
@@ -80,12 +90,12 @@ func _on_game_error(errtxt):
 func refresh_lobby():
 	var players = gamestate.get_player_list()
 	players.sort()
-	get_node("players/list").clear()
-	get_node("players/list").add_item(gamestate.get_player_name() + " (You)")
+	get_node("Players/list").clear()
+	get_node("Players/list").add_item(gamestate.get_player_name() + " (You)")
 	for p in players:
-		get_node("players/list").add_item(p)
+		get_node("Players/list").add_item(p)
 
-	get_node("players/start").disabled = not get_tree().is_network_server()
+	get_node("Players/start").disabled = not get_tree().is_network_server()
 
 func _on_start_pressed():
 	gamestate.begin_game()
