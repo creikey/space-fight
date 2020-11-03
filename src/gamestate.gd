@@ -1,8 +1,5 @@
 extends Node
 
-# Max number of players
-const MAX_PEERS = 12
-
 # Name for my player
 var player_name = "The Warrior"
 
