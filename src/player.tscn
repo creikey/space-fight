@@ -166,3 +166,6 @@ size_flags_vertical = 0
 custom_fonts/font = SubResource( 8 )
 text = "Player 1"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
