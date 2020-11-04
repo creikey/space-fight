@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Bounds.gd" type="Script" id=1]
 [ext_resource path="res://OutOfBounds.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://montserrat.otf" type="DynamicFontData" id=4]
 [ext_resource path="res://OutOfBounds.gd" type="Script" id=5]
 [ext_resource path="res://InBounds.png" type="Texture" id=6]
+[ext_resource path="res://SpawnPoints.tscn" type="PackedScene" id=7]
+[ext_resource path="res://WorldCamera.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Shader" id=3]
 code = "shader_type canvas_item;
@@ -22,8 +24,10 @@ void fragment() {
 shader = SubResource( 3 )
 
 [sub_resource type="SegmentShape2D" id=2]
-a = Vector2( 3000, 0 )
-b = Vector2( 0, 0 )
+b = Vector2( 3000, 0 )
+
+[sub_resource type="SegmentShape2D" id=5]
+b = Vector2( 0, 3000 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 44
@@ -38,21 +42,26 @@ texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 15000, 15000 )
 script = ExtResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Bounds" type="StaticBody2D" parent="."]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="TopWall" type="CollisionShape2D" parent="Bounds"]
 shape = SubResource( 2 )
 
 [node name="LeftWall" type="CollisionShape2D" parent="Bounds"]
-rotation = 1.5708
-shape = SubResource( 2 )
+shape = SubResource( 5 )
 
 [node name="RightWall" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 3000, 0 )
-rotation = 1.5708
-shape = SubResource( 2 )
+shape = SubResource( 5 )
 
 [node name="BottomWall" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 0, 3000 )
@@ -73,45 +82,10 @@ centered = false
 region_enabled = true
 region_rect = Rect2( 0, 0, 3000, 3000 )
 
-[node name="spawn_points" type="Node2D" parent="."]
-
-[node name="0" type="Position2D" parent="spawn_points"]
-position = Vector2( 72, 72 )
-
-[node name="1" type="Position2D" parent="spawn_points"]
-position = Vector2( 264, 216 )
-
-[node name="2" type="Position2D" parent="spawn_points"]
-position = Vector2( 72, 456 )
-
-[node name="3" type="Position2D" parent="spawn_points"]
-position = Vector2( 360, 552 )
-
-[node name="4" type="Position2D" parent="spawn_points"]
-position = Vector2( 840, 360 )
-
-[node name="5" type="Position2D" parent="spawn_points"]
-position = Vector2( 456, 264 )
-
-[node name="6" type="Position2D" parent="spawn_points"]
-position = Vector2( 696, 264 )
-
-[node name="7" type="Position2D" parent="spawn_points"]
-position = Vector2( 744, 456 )
-
-[node name="8" type="Position2D" parent="spawn_points"]
-position = Vector2( 312, 456 )
-
-[node name="9" type="Position2D" parent="spawn_points"]
-position = Vector2( 696, 72 )
-
-[node name="10" type="Position2D" parent="spawn_points"]
-position = Vector2( 504, 72 )
-
-[node name="11" type="Position2D" parent="spawn_points"]
-position = Vector2( 936, 72 )
-
 [node name="players" type="Node2D" parent="."]
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="score" type="HBoxContainer" parent="."]
 margin_right = 1024.0
@@ -150,4 +124,12 @@ size_flags_horizontal = 2
 size_flags_vertical = 2
 custom_fonts/font = SubResource( 1 )
 text = "EXIT GAME"
+
+[node name="Team0SpawnPoints" parent="." instance=ExtResource( 7 )]
+position = Vector2( 200, 1500 )
+
+[node name="Team1SpawnPoints" parent="." instance=ExtResource( 7 )]
+position = Vector2( 2800, 1500 )
+
+[node name="WorldCamera" parent="." instance=ExtResource( 8 )]
 [connection signal="pressed" from="winner/exit_game" to="score" method="_on_exit_game_pressed"]

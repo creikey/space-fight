@@ -61,6 +61,12 @@ func _connected_fail():
 	get_tree().set_network_peer(null) # Remove peer
 	emit_signal("connection_failed")
 
+func _get_player_data(id: int) -> Dictionary: # will always return correct even if id is self
+	if id == get_tree().get_network_unique_id():
+		return player_data
+	else:
+		return players[id]
+
 # Lobby management functions
 
 remote func register_player(id: int, new_player_data: Dictionary):
@@ -89,21 +95,26 @@ remote func pre_start_game(spawn_points):
 	var player_scene = load("res://player.tscn")
 
 	for p_id in spawn_points:
-		var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id])).position
+		# gets the team's set of spawn points, then spawn point index from dict
+		var spawn_pos: Vector2 = world.get_node(\
+			str("Team", _get_player_data(p_id)["team"], "SpawnPoints", \
+			"/", spawn_points[p_id])\
+		).global_position
+#		var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id])).position
 		var player = player_scene.instance()
 
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.position=spawn_pos
+#		player.set_network_master(1) #set server as master
 		player.set_network_master(p_id) #set unique id as master
 
-		if p_id == get_tree().get_network_unique_id():
-			# If node for this peer id, set name
-			player.set_player_name(player_data["username"])
-		else:
-			# Otherwise set name from peer
-			player.set_player_name(players[p_id]["username"])
+		player.set_player_name(_get_player_data(p_id)["username"])
 
 		world.get_node("players").add_child(player)
+
+		if p_id == get_tree().get_network_unique_id():
+			world.get_node("WorldCamera").target = player
+
 
 	# Set up score
 	world.get_node("score").add_player(get_tree().get_network_unique_id(), player_data["username"])
@@ -164,10 +175,16 @@ func begin_game():
 	# Create a dictionary with peer id and respective spawn points, could be improved by randomizing
 	var spawn_points = {}
 	spawn_points[1] = 0 # Server in spawn point 0
-	var spawn_point_idx = 1
+	
+	# reset count of players spawned in team to zero
+	var team_id_to_spawn_point_index = TEAM_ID_TO_NAME.duplicate(true)
+	for team_id in team_id_to_spawn_point_index.keys():
+		team_id_to_spawn_point_index[team_id] = 0
+		
 	for p in players:
-		spawn_points[p] = spawn_point_idx
-		spawn_point_idx += 1
+		var cur_team_id: int = players[p]["team"]
+		spawn_points[p] = team_id_to_spawn_point_index[cur_team_id]
+		team_id_to_spawn_point_index[cur_team_id] += 1
 	# Call to pre-start game with the spawn points
 	for p in players:
 		rpc_id(p, "pre_start_game", spawn_points)

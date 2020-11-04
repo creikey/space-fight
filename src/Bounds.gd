@@ -4,6 +4,7 @@ export var length: float = 3000.0
 
 func _ready():
 	$TopWall.shape.b.x = length
+	$LeftWall.shape.b.y = length
 	$BottomWall.position.y = length
 	$RightWall.position.x = length
 	
