@@ -13,8 +13,6 @@ onready var _lobby_join_button: Button = _joining_hbox.get_node("Join")
 onready var _error_label: Label = _menu_vbox.get_node("ErrorLabel")
 
 func _ready():
-	if OS.get_name() == 'HTML5':
-		$connect/server.hide()
 	# Called every time the node is added to the scene.
 	gamestate.connect("connection_failed", self, "_on_connection_failed")
 	gamestate.connect("connection_succeeded", self, "_on_connection_success")
@@ -91,11 +89,18 @@ func refresh_lobby():
 	var players = gamestate.get_player_list()
 	players.sort()
 	get_node("Players/list").clear()
-	get_node("Players/list").add_item(gamestate.get_player_name() + " (You)")
+	get_node("Players/list").add_item(_player_data_to_string(gamestate.player_data, true))
 	for p in players:
-		get_node("Players/list").add_item(p)
+		get_node("Players/list").add_item(_player_data_to_string(p))
 
 	get_node("Players/start").disabled = not get_tree().is_network_server()
+
+func _player_data_to_string(data: Dictionary, is_you: bool = false) -> String:
+	var to_return: String = data["username"]
+	if is_you:
+		to_return += " (You)"
+	to_return += str(" - ", gamestate.TEAM_ID_TO_NAME[data["team"]])
+	return to_return
 
 func _on_start_pressed():
 	gamestate.begin_game()
@@ -108,3 +113,8 @@ func _on_server_toggled(button_pressed):
 #	else:
 #		Server.stop()
 #		$connect/server.text = "Listen"
+
+
+func _on_TeamSelector_item_selected(index):
+	gamestate.player_data["team"] = index
+	gamestate.broadcast_my_info()

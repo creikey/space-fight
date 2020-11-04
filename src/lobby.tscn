@@ -15,6 +15,7 @@ __meta__ = {
 }
 
 [node name="Players" type="Panel" parent="."]
+visible = false
 margin_left = 393.0
 margin_top = 113.0
 margin_right = 1036.0
@@ -51,6 +52,9 @@ margin_bottom = 120.676
 size_flags_horizontal = 2
 size_flags_vertical = 0
 text = "Awaiting Players..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="start" type="Button" parent="Players"]
 margin_left = 265.56
@@ -72,8 +76,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="TeamSelector" type="OptionButton" parent="Players"]
+margin_left = 370.082
+margin_top = 28.4678
+margin_right = 596.082
+margin_bottom = 71.4678
+text = "Team A"
+items = [ "Team A", null, false, 0, null, "Team B", null, false, 1, null ]
+selected = 0
+
 [node name="Connect" type="Panel" parent="."]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 2
@@ -175,5 +187,6 @@ margin_bottom = 58.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 [connection signal="pressed" from="Players/start" to="." method="_on_start_pressed"]
+[connection signal="item_selected" from="Players/TeamSelector" to="." method="_on_TeamSelector_item_selected"]
 [connection signal="pressed" from="Connect/CenterContainer/V/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Connect/CenterContainer/V/H/Join" to="." method="_on_join_pressed"]

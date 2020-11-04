@@ -2,18 +2,18 @@ extends HBoxContainer
 
 var player_labels = {}
 
-func _process(_delta):
-	var rocks_left = get_node("../rocks").get_child_count()
-	if rocks_left == 0:
-		var winner_name = ""
-		var winner_score = 0
-		for p in player_labels:
-			if player_labels[p].score > winner_score:
-				winner_score = player_labels[p].score
-				winner_name = player_labels[p].name
-
-		get_node("../winner").set_text("THE WINNER IS:\n" + winner_name)
-		get_node("../winner").show()
+#func _process(_delta):
+#	var rocks_left = get_node("../rocks").get_child_count()
+#	if rocks_left == 0:
+#		var winner_name = ""
+#		var winner_score = 0
+#		for p in player_labels:
+#			if player_labels[p].score > winner_score:
+#				winner_score = player_labels[p].score
+#				winner_name = player_labels[p].name
+#
+#		get_node("../winner").set_text("THE WINNER IS:\n" + winner_name)
+#		get_node("../winner").show()
 
 sync func increase_score(for_who):
 	assert(for_who in player_labels)
