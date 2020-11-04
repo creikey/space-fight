@@ -32,7 +32,7 @@ func _player_connected(_id):
 func _player_disconnected(id):
 	if get_tree().is_network_server():
 		if has_node("/root/world"): # Game is in progress
-			emit_signal("game_error", "Player " + players[id] + " disconnected")
+			emit_signal("game_error", "Player " + players[id]["username"] + " disconnected")
 			end_game()
 		else: # Game is not in progress
 			# If we are the server, send to the new dude all the already registered players
@@ -105,14 +105,17 @@ remote func pre_start_game(spawn_points):
 
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.position=spawn_pos
-#		player.set_network_master(1) #set server as master
-		player.set_network_master(p_id) #set unique id as master
+		player.set_network_master(1) #set server as master
+#		player.set_network_master(p_id) #set unique id as master
 
 		player.set_player_name(_get_player_data(p_id)["username"])
 
 		world.get_node("players").add_child(player)
 
+		player.controlling_peer = p_id
+
 		if p_id == get_tree().get_network_unique_id():
+#			player.is_current_player = true
 			world.get_node("WorldCamera").target = player
 
 
@@ -174,13 +177,15 @@ func begin_game():
 	Client.seal_lobby()
 	# Create a dictionary with peer id and respective spawn points, could be improved by randomizing
 	var spawn_points = {}
-	spawn_points[1] = 0 # Server in spawn point 0
 	
 	# reset count of players spawned in team to zero
 	var team_id_to_spawn_point_index = TEAM_ID_TO_NAME.duplicate(true)
 	for team_id in team_id_to_spawn_point_index.keys():
 		team_id_to_spawn_point_index[team_id] = 0
-		
+	
+	spawn_points[1] = 0 # Server in spawn point 0
+	team_id_to_spawn_point_index[player_data["team"]] += 1
+	
 	for p in players:
 		var cur_team_id: int = players[p]["team"]
 		spawn_points[p] = team_id_to_spawn_point_index[cur_team_id]
@@ -188,6 +193,8 @@ func begin_game():
 	# Call to pre-start game with the spawn points
 	for p in players:
 		rpc_id(p, "pre_start_game", spawn_points)
+
+	printt("Spawn points: ", var2str(spawn_points))
 
 	pre_start_game(spawn_points)
 
