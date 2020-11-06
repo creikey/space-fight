@@ -14,9 +14,8 @@ func _physics_process(delta):
 			float(Input.is_action_pressed("g_down")) - float(Input.is_action_pressed("g_up"))
 		)
 #		printt("Transmitting movement ", movement_to_transmit)
-		rpc("receive_movement", movement_to_transmit)
-		
-	
+		rpc_unreliable("receive_movement", movement_to_transmit)
+
 	if is_network_master():
 #		printt("Moving with movement ", _movement)
 		move_and_slide(_movement*MOTION_SPEED)
