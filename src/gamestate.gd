@@ -13,6 +13,7 @@ const TEAM_ID_TO_NAME: Dictionary = {
 
 # Names for remote players in id:name format
 var players = {}
+var frame: int = -1
 
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
@@ -132,6 +133,7 @@ remote func pre_start_game(spawn_points):
 
 remote func post_start_game():
 	get_tree().set_pause(false) # Unpause and unleash the game!
+	frame = 0 # this will 
 
 var players_ready = []
 
@@ -207,6 +209,10 @@ func end_game():
 	players.clear()
 	get_tree().set_network_peer(null) # End networking
 	Client.stop()
+
+func _physics_process(_delta):
+	if frame >= 0:
+		frame += 1
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
