@@ -105,7 +105,7 @@ remote func pre_start_game(spawn_points):
 		var player = player_scene.instance()
 
 		player.set_name(str(p_id)) # Use unique ID as node name
-		player.position=spawn_pos
+		player.set_deferred("global_position", spawn_pos)
 		player.set_network_master(1) #set server as master
 #		player.set_network_master(p_id) #set unique id as master
 

@@ -1,10 +1,11 @@
-extends KinematicBody2D
+extends RigidBody2D
 
 const MOTION_SPEED = 500.0
+const THRUST: float = 300.0
 
 var controlling_peer: int = -1 # peer that will manage my input
 
-var _puppet_position := Vector2() # set from the master
+var _puppet_transform : Transform2D = global_transform # set from the master
 var _movement := Vector2() # only set and used on the network master
 
 func _ready():
@@ -21,18 +22,20 @@ func _physics_process(delta):
 		rpc_unreliable("receive_movement", movement_to_transmit)
 
 	if is_network_master():
+		applied_force = _movement * THRUST
 #		printt("Moving with movement ", _movement)
-		move_and_slide(_movement*MOTION_SPEED)
-		rpc_unreliable("receive_position", global_position, gamestate.frame)
+#		move_and_slide(_movement*MOTION_SPEED)
+		rpc_unreliable("receive_transform", global_transform, gamestate.frame)
 #		rset_unreliable("puppet_position", global_position)
 	else:
-		global_position = lerp(global_position, _puppet_position, 0.2)
+#	printt(global_transform, global_transform, 0.2)
+		global_transform = global_transform.interpolate_with(_puppet_transform, 0.2)
 
 var last_frame_received: int = 0
 
-puppet func receive_position(new_position: Vector2, frame: int):
+puppet func receive_transform(new_transform: Transform2D, frame: int):
 	if frame > last_frame_received:
-		_puppet_position = new_position
+		_puppet_transform = new_transform
 		last_frame_received = frame
 
 master func receive_movement(new_movement: Vector2):

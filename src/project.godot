@@ -67,6 +67,10 @@ g_down={
  ]
 }
 
+[physics]
+
+2d/default_gravity=0
+
 [rendering]
 
 environment/default_clear_color=Color( 0.286275, 0.176471, 0.176471, 1 )
