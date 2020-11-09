@@ -3,9 +3,9 @@ extends RigidBody2D
 const MOTION_SPEED = 500.0
 const THRUST: float = 300.0
 
+var health: float = 1.0
 var controlling_peer: int = -1 # peer that will manage my input
-
-var _puppet_transform : Transform2D = global_transform # set from the master
+var _puppet_transform : Transform2D = Transform2D(0.0, Vector2()) # set from the master
 var _movement := Vector2() # only set and used on the network master
 
 func _ready():
