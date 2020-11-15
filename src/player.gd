@@ -59,7 +59,8 @@ func _physics_process(delta: float):
 		if dead:
 			movement_to_transmit = Vector2()
 #		printt("Transmitting movement ", movement_to_transmit)
-		rpc_unreliable("receive_movement", movement_to_transmit)
+#		rpc_unreliable("receive_movement", movement_to_transmit)
+		rpc_unreliable_id(get_network_master(), "receive_movement", movement_to_transmit)
 
 	if is_network_master():
 		if dead:

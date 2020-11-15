@@ -10,3 +10,4 @@ func _process(_delta):
 	$HealthBar.value = health
 	$RespawnCountdown.visible = respawn_time >= 0.0
 	$RespawnCountdown.text = str(stepify(respawn_time, 0.1))
+	$ScoreLabel.text = str("Team A: ", gamestate.team_scores["team_a"], " | Team B: ", gamestate.team_scores["team_b"])

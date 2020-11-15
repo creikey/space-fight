@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Circle.gd" type="Script" id=1]
+[ext_resource path="res://TeamBall.gd" type="Script" id=2]
+[ext_resource path="res://Component_NetworkedRigidBody.gd" type="Script" id=3]
+
+[sub_resource type="PhysicsMaterial" id=2]
+bounce = 0.2
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 16.2113
+
+[node name="TeamBall" type="RigidBody2D"]
+physics_material_override = SubResource( 2 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Circle" type="Node2D" parent="."]
+script = ExtResource( 1 )
+radius = 16.0
+
+[node name="Component_NetworkedRigidBody" type="Node" parent="."]
+script = ExtResource( 3 )

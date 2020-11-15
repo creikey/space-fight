@@ -10,7 +10,7 @@
 [sub_resource type="PhysicsMaterial" id=1]
 bounce = 0.5
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=2]
 length = 0.8
 loop = true
 tracks/0/type = "value"
@@ -26,7 +26,7 @@ tracks/0/keys = {
 "values": [ 0, 4, 8, 12 ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 length = 1.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
@@ -65,7 +65,7 @@ tracks/2/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=4]
 length = 0.8
 loop = true
 tracks/0/type = "value"
@@ -81,7 +81,7 @@ tracks/0/keys = {
 "values": [ 0, 4, 8, 12 ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 length = 0.8
 loop = true
 step = 0.2
@@ -98,7 +98,7 @@ tracks/0/keys = {
 "values": [ 1, 5, 9, 13 ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 length = 0.8
 loop = true
 step = 0.2
@@ -115,7 +115,7 @@ tracks/0/keys = {
 "values": [ 3, 7, 11, 15 ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=7]
 length = 0.8
 loop = true
 step = 0.2
@@ -132,18 +132,19 @@ tracks/0/keys = {
 "values": [ 2, 6, 10, 14 ]
 }
 
-[sub_resource type="DynamicFont" id=9]
+[sub_resource type="DynamicFont" id=8]
 size = 14
 font_data = ExtResource( 3 )
 
-[sub_resource type="StyleBoxFlat" id=11]
+[sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.266667, 0.878431, 0.278431, 1 )
 
-[sub_resource type="StyleBoxFlat" id=12]
+[sub_resource type="StyleBoxFlat" id=10]
 bg_color = Color( 0.337255, 0.27451, 0.27451, 1 )
 
 [node name="player" type="RigidBody2D"]
 physics_material_override = SubResource( 1 )
+continuous_cd = 1
 contacts_reported = 10
 contact_monitor = true
 script = ExtResource( 1 )
@@ -158,12 +159,12 @@ hframes = 4
 [node name="PlayerShape" parent="." instance=ExtResource( 5 )]
 
 [node name="anim" type="AnimationPlayer" parent="."]
-anims/standing = SubResource( 3 )
-anims/stunned = SubResource( 4 )
-anims/walk_down = SubResource( 5 )
-anims/walk_left = SubResource( 6 )
-anims/walk_right = SubResource( 7 )
-anims/walk_up = SubResource( 8 )
+anims/standing = SubResource( 2 )
+anims/stunned = SubResource( 3 )
+anims/walk_down = SubResource( 4 )
+anims/walk_left = SubResource( 5 )
+anims/walk_right = SubResource( 6 )
+anims/walk_up = SubResource( 7 )
 
 [node name="label" type="Label" parent="."]
 margin_left = -82.0
@@ -172,7 +173,7 @@ margin_right = 85.0
 margin_bottom = -14.0
 size_flags_horizontal = 2
 size_flags_vertical = 0
-custom_fonts/font = SubResource( 9 )
+custom_fonts/font = SubResource( 8 )
 text = "Player 1"
 align = 1
 __meta__ = {
@@ -190,8 +191,8 @@ margin_top = 30.0
 margin_right = 33.0
 margin_bottom = 41.0
 theme = ExtResource( 4 )
-custom_styles/fg = SubResource( 11 )
-custom_styles/bg = SubResource( 12 )
+custom_styles/fg = SubResource( 9 )
+custom_styles/bg = SubResource( 10 )
 max_value = 1.0
 percent_visible = false
 __meta__ = {

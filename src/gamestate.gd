@@ -15,6 +15,11 @@ const TEAM_ID_TO_NAME: Dictionary = {
 var players = {}
 var frame: int = -1
 
+var team_scores: Dictionary = {
+	"team_a": 0,
+	"team_b": 0,
+}
+
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
 signal connection_failed()
@@ -125,12 +130,18 @@ remote func pre_start_game(spawn_points):
 	world.get_node("score").add_player(get_tree().get_network_unique_id(), player_data["username"])
 	for pn in players:
 		world.get_node("score").add_player(pn, players[pn]["username"])
+	
+	for team_name in team_scores:
+		team_scores[team_name] = 0
 
 	if not get_tree().is_network_server():
 		# Tell server we are ready to start
 		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
 	elif players.size() == 0:
 		post_start_game()
+
+puppetsync func modify_team_score(team_name: String, delta: int):
+	team_scores[team_name] += delta
 
 remote func post_start_game():
 	get_tree().set_pause(false) # Unpause and unleash the game!

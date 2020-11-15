@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TeamBall.tscn" type="PackedScene" id=1]
+
+[node name="TeamABall" groups=[
+"team_a",
+] instance=ExtResource( 1 )]
+
+[node name="Circle" parent="." index="1"]
+color = Color( 0.435294, 0.65098, 0.431373, 1 )

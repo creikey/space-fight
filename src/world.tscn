@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Bounds.gd" type="Script" id=1]
 [ext_resource path="res://OutOfBounds.png" type="Texture" id=2]
@@ -8,6 +8,10 @@
 [ext_resource path="res://InBounds.png" type="Texture" id=6]
 [ext_resource path="res://SpawnPoints.tscn" type="PackedScene" id=7]
 [ext_resource path="res://WorldCamera.tscn" type="PackedScene" id=8]
+[ext_resource path="res://TeamAGoal.tscn" type="PackedScene" id=9]
+[ext_resource path="res://TeamBGoal.tscn" type="PackedScene" id=10]
+[ext_resource path="res://TeamABall.tscn" type="PackedScene" id=11]
+[ext_resource path="res://TeamBBall.tscn" type="PackedScene" id=12]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -124,6 +128,9 @@ size_flags_horizontal = 2
 size_flags_vertical = 2
 custom_fonts/font = SubResource( 5 )
 text = "EXIT GAME"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Team0SpawnPoints" parent="." instance=ExtResource( 7 )]
 position = Vector2( 200, 1500 )
@@ -132,4 +139,19 @@ position = Vector2( 200, 1500 )
 position = Vector2( 2800, 1500 )
 
 [node name="WorldCamera" parent="." instance=ExtResource( 8 )]
+
+[node name="TeamAGoal" parent="." instance=ExtResource( 9 )]
+position = Vector2( 0, 1500 )
+
+[node name="TeamBGoal" parent="." instance=ExtResource( 10 )]
+position = Vector2( 3000, 1500 )
+
+[node name="TeamABall" parent="." instance=ExtResource( 11 )]
+position = Vector2( 2900, 1500 )
+mass = -nan.0
+physics_material_override = null
+
+[node name="TeamBBall" parent="." instance=ExtResource( 12 )]
+position = Vector2( 100, 1500 )
+physics_material_override = null
 [connection signal="pressed" from="winner/exit_game" to="score" method="_on_exit_game_pressed"]
