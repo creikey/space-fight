@@ -8,9 +8,26 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node",
+"class": "Component_NetworkedRigidBody",
+"language": "GDScript",
+"path": "res://Component_NetworkedRigidBody.gd"
+}, {
+"base": "RigidBody2D",
+"class": "DeadBody",
+"language": "GDScript",
+"path": "res://DeadBody.gd"
+}, {
+"base": "Control",
+"class": "UI",
+"language": "GDScript",
+"path": "res://UILayer/UI.gd"
+} ]
 _global_script_class_icons={
-
+"Component_NetworkedRigidBody": "",
+"DeadBody": "",
+"UI": ""
 }
 
 [application]
@@ -23,6 +40,7 @@ run/main_scene="res://lobby.tscn"
 Client="*res://signaling/client/multiplayer_client.gd"
 gamestate="*res://gamestate.gd"
 DebugLayer="*res://Debug/DebugLayer.tscn"
+UILayer="*res://UILayer/UILayer.tscn"
 
 [debug]
 

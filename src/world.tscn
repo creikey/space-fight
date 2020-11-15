@@ -9,7 +9,7 @@
 [ext_resource path="res://SpawnPoints.tscn" type="PackedScene" id=7]
 [ext_resource path="res://WorldCamera.tscn" type="PackedScene" id=8]
 
-[sub_resource type="Shader" id=3]
+[sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
 void fragment() {
@@ -20,16 +20,16 @@ void fragment() {
 	COLOR = texture(TEXTURE, uv);
 }"
 
-[sub_resource type="ShaderMaterial" id=4]
-shader = SubResource( 3 )
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
 
-[sub_resource type="SegmentShape2D" id=2]
+[sub_resource type="SegmentShape2D" id=3]
 b = Vector2( 3000, 0 )
 
-[sub_resource type="SegmentShape2D" id=5]
+[sub_resource type="SegmentShape2D" id=4]
 b = Vector2( 0, 3000 )
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=5]
 size = 44
 font_data = ExtResource( 4 )
 
@@ -37,7 +37,7 @@ font_data = ExtResource( 4 )
 
 [node name="OutOfBounds" type="Sprite" parent="."]
 modulate = Color( 0.517647, 0.294118, 0.294118, 1 )
-material = SubResource( 4 )
+material = SubResource( 2 )
 texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 15000, 15000 )
@@ -54,18 +54,18 @@ __meta__ = {
 }
 
 [node name="TopWall" type="CollisionShape2D" parent="Bounds"]
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="LeftWall" type="CollisionShape2D" parent="Bounds"]
-shape = SubResource( 5 )
+shape = SubResource( 4 )
 
 [node name="RightWall" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 3000, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 4 )
 
 [node name="BottomWall" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 0, 3000 )
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="ColorRect" type="ColorRect" parent="Bounds"]
 margin_right = 3000.0
@@ -102,7 +102,7 @@ margin_right = 1031.0
 margin_bottom = 617.0
 size_flags_horizontal = 2
 size_flags_vertical = 0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 5 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 2
 custom_constants/shadow_offset_y = 2
@@ -122,7 +122,7 @@ margin_right = 649.0
 margin_bottom = 469.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 5 )
 text = "EXIT GAME"
 
 [node name="Team0SpawnPoints" parent="." instance=ExtResource( 7 )]

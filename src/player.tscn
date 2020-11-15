@@ -1,14 +1,14 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 [ext_resource path="res://charwalk.png" type="Texture" id=2]
 [ext_resource path="res://montserrat.otf" type="DynamicFontData" id=3]
+[ext_resource path="res://Theme.tres" type="Theme" id=4]
+[ext_resource path="res://PlayerShape.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Component_NetworkedRigidBody.gd" type="Script" id=6]
 
 [sub_resource type="PhysicsMaterial" id=1]
 bounce = 0.5
-
-[sub_resource type="CircleShape2D" id=2]
-radius = 20.0
 
 [sub_resource type="Animation" id=3]
 length = 0.8
@@ -136,9 +136,16 @@ tracks/0/keys = {
 size = 14
 font_data = ExtResource( 3 )
 
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.266667, 0.878431, 0.278431, 1 )
+
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 0.337255, 0.27451, 0.27451, 1 )
+
 [node name="player" type="RigidBody2D"]
-mode = 2
 physics_material_override = SubResource( 1 )
+contacts_reported = 10
+contact_monitor = true
 script = ExtResource( 1 )
 
 [node name="sprite" type="Sprite" parent="."]
@@ -148,8 +155,7 @@ offset = Vector2( -0.0750351, -6.23615 )
 vframes = 4
 hframes = 4
 
-[node name="shape" type="CollisionShape2D" parent="."]
-shape = SubResource( 2 )
+[node name="PlayerShape" parent="." instance=ExtResource( 5 )]
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/standing = SubResource( 3 )
@@ -172,3 +178,27 @@ align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CollisionNormalFinder" type="RayCast2D" parent="."]
+enabled = true
+
+[node name="MyHealthBar" type="ProgressBar" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -30.0
+margin_top = 30.0
+margin_right = 33.0
+margin_bottom = 41.0
+theme = ExtResource( 4 )
+custom_styles/fg = SubResource( 11 )
+custom_styles/bg = SubResource( 12 )
+max_value = 1.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": ""
+}
+
+[node name="Component_NetworkedRigidBody" type="Node" parent="."]
+script = ExtResource( 6 )
+[connection signal="body_entered" from="." to="." method="_on_player_body_entered"]

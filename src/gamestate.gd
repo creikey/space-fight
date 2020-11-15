@@ -104,6 +104,7 @@ remote func pre_start_game(spawn_points):
 #		var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id])).position
 		var player = player_scene.instance()
 
+		player.spawn_transform = Transform2D(0.0, spawn_pos)
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.set_deferred("global_position", spawn_pos)
 		player.set_network_master(1) #set server as master
@@ -199,6 +200,9 @@ func begin_game():
 	printt("Spawn points: ", var2str(spawn_points))
 
 	pre_start_game(spawn_points)
+
+func in_game() -> bool:
+	return has_node("/root/world")
 
 func end_game():
 	if has_node("/root/world"): # Game is in progress

@@ -3,40 +3,74 @@ extends RigidBody2D
 const MOTION_SPEED = 500.0
 const THRUST: float = 300.0
 
-var health: float = 1.0
+onready var _collision_normal_finder: RayCast2D = $CollisionNormalFinder
+onready var _collision_shape: CollisionShape2D = $PlayerShape
+
+sync var health: float = 1.0
+var dead: bool = true # dead by default
+var respawn_time: float = -1.0
 var controlling_peer: int = -1 # peer that will manage my input
-var _puppet_transform : Transform2D = Transform2D(0.0, Vector2()) # set from the master
+var spawn_transform: Transform2D =Transform2D(0.0, Vector2())
+
 var _movement := Vector2() # only set and used on the network master
 
-func _ready():
-	$shape.disabled = not is_network_master()
-#	set("motion/sync_to_physics", not is_network_master())
+func get_dead_body_state() -> Dictionary:
+	var properties_to_return: Array = ["linear_velocity", "angular_velocity", "global_transform"]
+	var to_return: Dictionary = {}
+	for p in properties_to_return:
+		to_return[p] = get(p)
+	return to_return
+	
+puppetsync func die(dead_body_state: Dictionary):
+	var new_body: DeadBody = preload("res://DeadBody.tscn").instance()
+	get_parent().add_child(new_body)
+	new_body.call_deferred("create_from_state", dead_body_state)
+	dead = true
+	visible = false
+	_collision_shape.set_deferred("disabled", true)
+	set_deferred("mode", RigidBody2D.MODE_STATIC)
+	respawn_time = 3.0
 
-func _physics_process(delta):
-	if controlling_peer == get_tree().get_network_unique_id(): # this node will manage input!
+puppetsync func respawn():
+	dead = false
+	visible = true
+	_collision_shape.set_deferred("disabled", not is_network_master())
+	set_deferred("mode", RigidBody2D.MODE_RIGID)
+	respawn_time = -1.0
+	health = 1.0
+	set_deferred("global_transform", spawn_transform)
+
+func _is_managing_client() -> bool: # this node will manage input!
+	return controlling_peer == get_tree().get_network_unique_id()
+
+func _physics_process(delta: float):
+	$MyHealthBar.value = health
+	
+	if respawn_time > 0.0:
+		respawn_time -= delta
+	
+	if _is_managing_client(): 
+		UILayer.ui.health = health
+		UILayer.ui.respawn_time = respawn_time
 		var movement_to_transmit: Vector2 = Vector2(\
 			float(Input.is_action_pressed("g_right")) - float(Input.is_action_pressed("g_left")),
 			float(Input.is_action_pressed("g_down")) - float(Input.is_action_pressed("g_up"))
 		)
+		if dead:
+			movement_to_transmit = Vector2()
 #		printt("Transmitting movement ", movement_to_transmit)
 		rpc_unreliable("receive_movement", movement_to_transmit)
 
 	if is_network_master():
-		applied_force = _movement * THRUST
-#		printt("Moving with movement ", _movement)
-#		move_and_slide(_movement*MOTION_SPEED)
-		rpc_unreliable("receive_transform", global_transform, gamestate.frame)
-#		rset_unreliable("puppet_position", global_position)
-	else:
-#	printt(global_transform, global_transform, 0.2)
-		global_transform = global_transform.interpolate_with(_puppet_transform, 0.2)
+		if dead:
+			if respawn_time < 0.0:
+				rpc("respawn")
+		else:
+			applied_force = _movement * THRUST
+		_collision_normal_finder.cast_to = _collision_normal_finder.to_local(global_position + linear_velocity.normalized() * 50.0)
 
-var last_frame_received: int = 0
-
-puppet func receive_transform(new_transform: Transform2D, frame: int):
-	if frame > last_frame_received:
-		_puppet_transform = new_transform
-		last_frame_received = frame
+		if health <= 0.0 and not dead:
+			rpc("die", get_dead_body_state())
 
 master func receive_movement(new_movement: Vector2):
 	if get_tree().get_rpc_sender_id() != controlling_peer:
@@ -47,3 +81,15 @@ master func receive_movement(new_movement: Vector2):
 
 func set_player_name(new_name):
 	get_node("label").set_text(new_name)
+
+
+func _on_player_body_entered(_body):
+#	printt(linear_velocity.length(), linear_velocity.length()/300.0)
+	if is_network_master() and not dead and linear_velocity.length() > 100.0:
+		health -= min(0.5, linear_velocity.length()/1500.0)
+		rset("health", health)
+#	if _collision_normal_finder.is_colliding():
+#		print(linear_velocity.normalized().dot(_collision_normal_finder.get_collision_normal().normalized()))
+
+func _ready():
+	respawn()
