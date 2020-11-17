@@ -1,9 +1,12 @@
 extends Node
 
+const VERSION: int = 1
+
 # Name for my player
 var player_data = {
 	"username": "The Warrior",
 	"team": 0,
+	"version": VERSION,
 }
 
 const TEAM_ID_TO_NAME: Dictionary = {
@@ -92,6 +95,19 @@ remote func unregister_player(id):
 	emit_signal("player_list_changed")
 
 remote func pre_start_game(spawn_points):
+	for p in players:
+		var cur_version: int = players[p]["version"]
+		var message: String = ""
+		if cur_version < VERSION:
+			message = str("Player ", players[p]["username"], " has an out of date game version!")
+		elif cur_version > VERSION:
+			message = str("Player ", players[p]["username"], " has too updated of a game version!")
+		
+		if message != "":
+			emit_signal("game_error", message)
+			end_game()
+			
+	
 	# Change scene
 	var world = load("res://world.tscn").instance()
 	get_tree().get_root().add_child(world)
