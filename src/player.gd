@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 const MOTION_SPEED = 500.0
-const THRUST: float = 300.0
+const THRUST: float = 500.0
 
 onready var _collision_normal_finder: RayCast2D = $CollisionNormalFinder
 onready var _collision_shape: CollisionShape2D = $PlayerShape
@@ -23,7 +23,7 @@ func get_dead_body_state() -> Dictionary:
 	
 puppetsync func die(dead_body_state: Dictionary):
 	var new_body: DeadBody = preload("res://DeadBody.tscn").instance()
-	get_parent().add_child(new_body)
+	get_parent().call_deferred("add_child", new_body)
 	new_body.call_deferred("create_from_state", dead_body_state)
 	dead = true
 	visible = false
