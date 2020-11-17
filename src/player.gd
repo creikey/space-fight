@@ -69,7 +69,8 @@ func _physics_process(delta: float):
 		else:
 			applied_force = _movement * THRUST
 		_collision_normal_finder.cast_to = _collision_normal_finder.to_local(global_position + linear_velocity.normalized() * 50.0)
-		health += 0.1*delta
+		health += 0.05*delta
+		rset("health", health)
 		if health <= 0.0 and not dead:
 			rpc("die", get_dead_body_state())
 
@@ -87,7 +88,7 @@ func set_player_name(new_name):
 func _on_player_body_entered(_body):
 #	printt(linear_velocity.length(), linear_velocity.length()/300.0)
 	if is_network_master() and not dead and linear_velocity.length() > 100.0:
-		health -= min(0.5, linear_velocity.length()/2500.0)
+		health -= min(0.5, linear_velocity.length()/1500.0)
 		rset("health", health)
 #	if _collision_normal_finder.is_colliding():
 #		print(linear_velocity.normalized().dot(_collision_normal_finder.get_collision_normal().normalized()))
