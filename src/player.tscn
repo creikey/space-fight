@@ -202,4 +202,3 @@ __meta__ = {
 
 [node name="Component_NetworkedRigidBody" type="Node" parent="."]
 script = ExtResource( 6 )
-[connection signal="body_entered" from="." to="." method="_on_player_body_entered"]

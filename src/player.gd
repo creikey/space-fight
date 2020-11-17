@@ -84,12 +84,16 @@ master func receive_movement(new_movement: Vector2):
 func set_player_name(new_name):
 	get_node("label").set_text(new_name)
 
+func _integrate_forces(state: Physics2DDirectBodyState):
+	if not is_network_master() or dead:
+		return
+	for c in state.get_contact_count():
+		var impact_velocity: float = linear_velocity.project(state.get_contact_local_normal(c)).length()
+		print(impact_velocity)
+		if impact_velocity > 5.0:
+			health -= min(0.5, impact_velocity/600.0)
+			rset("health", health)
 
-func _on_player_body_entered(_body):
-#	printt(linear_velocity.length(), linear_velocity.length()/300.0)
-	if is_network_master() and not dead and linear_velocity.length() > 100.0:
-		health -= min(0.5, linear_velocity.length()/1500.0)
-		rset("health", health)
 #	if _collision_normal_finder.is_colliding():
 #		print(linear_velocity.normalized().dot(_collision_normal_finder.get_collision_normal().normalized()))
 
