@@ -15,7 +15,7 @@ var spawn_transform: Transform2D =Transform2D(0.0, Vector2())
 var _movement := Vector2() # only set and used on the network master
 
 func get_dead_body_state() -> Dictionary:
-	var properties_to_return: Array = ["linear_velocity", "angular_velocity", "global_transform"]
+	var properties_to_return: Array = ["global_transform", "linear_velocity", "angular_velocity"]
 	var to_return: Dictionary = {}
 	for p in properties_to_return:
 		to_return[p] = get(p)

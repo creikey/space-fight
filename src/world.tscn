@@ -148,10 +148,7 @@ position = Vector2( 3000, 1500 )
 
 [node name="TeamABall" parent="." instance=ExtResource( 11 )]
 position = Vector2( 2900, 1500 )
-mass = -nan.0
-physics_material_override = null
 
 [node name="TeamBBall" parent="." instance=ExtResource( 12 )]
 position = Vector2( 100, 1500 )
-physics_material_override = null
 [connection signal="pressed" from="winner/exit_game" to="score" method="_on_exit_game_pressed"]
