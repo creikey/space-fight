@@ -1,6 +1,6 @@
 extends Node
 
-const VERSION: int = 2
+const VERSION: int = 3
 
 # Name for my player
 var player_data = {
