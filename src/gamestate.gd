@@ -23,6 +23,8 @@ var team_scores: Dictionary = {
 	"team_b": 0,
 }
 
+var dead_body_counter: int = 1
+
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
 signal connection_failed()

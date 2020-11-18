@@ -14,15 +14,18 @@ var spawn_transform: Transform2D =Transform2D(0.0, Vector2())
 
 var _movement := Vector2() # only set and used on the network master
 
+# depends on the gamestate singleton dead body counter variable
 func get_dead_body_state() -> Dictionary:
 	var properties_to_return: Array = ["global_transform", "linear_velocity", "angular_velocity"]
 	var to_return: Dictionary = {}
 	for p in properties_to_return:
 		to_return[p] = get(p)
+	to_return["name"] = str(get_tree().get_network_unique_id(), "_deadbody_", gamestate.dead_body_counter)
 	return to_return
 	
 puppetsync func die(dead_body_state: Dictionary):
 	var new_body: DeadBody = preload("res://DeadBody.tscn").instance()
+	new_body.name = dead_body_state["name"] # hack, shouldn't rely on name in dict
 	get_parent().call_deferred("add_child", new_body)
 	new_body.call_deferred("create_from_state", dead_body_state)
 	dead = true
@@ -73,6 +76,7 @@ func _physics_process(delta: float):
 		rset("health", health)
 		if health <= 0.0 and not dead:
 			rpc("die", get_dead_body_state())
+			gamestate.dead_body_counter += 1
 
 master func receive_movement(new_movement: Vector2):
 	if get_tree().get_rpc_sender_id() != controlling_peer:
